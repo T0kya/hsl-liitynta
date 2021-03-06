@@ -3,7 +3,7 @@ import axios from 'axios'
 import L from 'leaflet'
 import  React, { useCallback, useEffect, useState } from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import { FeatureGroup, MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
 import { DetailedFacility, Facility, FilterTypes, Utilization } from '../utils/interfaces'
 import { Checkbox } from './Filters/Checkbox'
 
@@ -51,14 +51,13 @@ const Icon = styled.div<{color: string}> `
 `
 
 const Filters = styled.div `
+  display: block;
+  margin: 15px 0;
+`
+const FilterGroup = styled.div `
   display:flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
-`
-const FilterGroup = styled.div `
-  display: flex;
-  flex-direction: column;
 `
 
 interface Props {
@@ -74,8 +73,8 @@ export function Map ({markers}: Props) {
   const [utilization, setUtilization] = useState<Utilization[]>([])
 
   const [checked, setChecked] = useState<CheckedState>({
-    FREE: false,
-    FREETWELWEHOURS: false,
+    '12H': false,
+    '247': false,
     CUSTOM: false,
   })
   const [activeFilters, setActiveFilters] = useState<string[]>([])
@@ -107,6 +106,7 @@ export function Map ({markers}: Props) {
     if (activeFilters.length === 0) {
       return markers
     }
+    console.log(activeFilters)
     return markers.filter(item => activeFilters.some(activeFilterName => item.pricingMethod.includes(activeFilterName)))
     
    
@@ -149,7 +149,16 @@ export function Map ({markers}: Props) {
     })
   }
 
-
+  const center = [51.505, -0.09]
+  const rectangle = [
+    [51.49, -0.08],
+    [51.5, -0.06],
+  ]
+  
+  const fillBlueOptions = { fillColor: 'blue' }
+  const fillRedOptions = { fillColor: 'red' }
+  const greenOptions = { color: 'green', fillColor: 'green' }
+  const purpleOptions = { color: 'purple' }
 
   return (
     <Container>    
@@ -158,39 +167,58 @@ export function Map ({markers}: Props) {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {currentList && currentList.map(marker => {
-          const details = detailedPoints?.find(id => id.id === marker.id)
-
-          return (
-            <Marker 
-              key={marker.id} 
-              position={[marker.location.bbox[1], marker.location.bbox[0]]} 
-              icon={details?.openingHours.openNow ? greenIcon : redIcon}
-              eventHandlers={{
-                click: () => {
-                  setUtilization([])
-                  getUtilization(marker.id)
-                },
-              }}>
-              <Popup>
-                {marker.name.fi}<br />
-                Paikkoja yhteensä: {details?.builtCapacity.CAR}<br />
-                {utilization.length !== 0 && <span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> }
-              </Popup>
-            </Marker>
+       
+         
+        <FeatureGroup pathOptions={purpleOptions}>
+          {currentList && currentList.map(marker => {
+            const details = detailedPoints?.find(id => id.id === marker.id)
+         
+            return (
+              <div key={marker.id}>
+                <Marker 
+                  position={[marker.location.bbox[1], marker.location.bbox[0]]} 
+                  icon={details?.openingHours.openNow ? greenIcon : redIcon}
+                  eventHandlers={{
+                    click: () => {
+                      setUtilization([])
+                      getUtilization(marker.id)
+                    },
+                  }}>
+                  <Popup>
+                    {marker.name.fi}<br />
+                    Paikkoja yhteensä: {details?.builtCapacity.CAR}<br />
+                    {utilization.length !== 0 && <span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> }
+                  </Popup>
+                </Marker>
+                <Rectangle  bounds={[
+                  [marker.location.bbox[1], marker.location.bbox[0]],
+                  [marker.location.bbox[3], marker.location.bbox[2]],
+                ]} />
+            
+              </div>
+            )}
+         
           )}
-        
-        )}
+        </FeatureGroup>
       </StyledMap>
       <Filters>
+        
+        <h3>Maksuton pysäköinti:</h3>
         <FilterGroup>
-          <h3>Maksuton pysäköinti:</h3>
           <label>
             <Checkbox
-              name="FREE"
-              checked={checked.FREE}
+              name="12H"
+              checked={checked['12H']}
               onChange={toggleChecked}
-            >Ilmainen</Checkbox>
+            >12h</Checkbox>
+           
+          </label>
+          <label>
+            <Checkbox
+              name="247"
+              checked={checked['247']}
+              onChange={toggleChecked}
+            >24h</Checkbox>
            
           </label>
         </FilterGroup>

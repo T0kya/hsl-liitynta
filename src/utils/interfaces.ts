@@ -37,4 +37,4 @@ export interface DetailedFacility {
 }
 
 
-export type FilterTypes = 'FREE' | 'FREETWELWEHOURS' | 'CUSTOM'
+export type FilterTypes = '12H' | '247' | 'CUSTOM'
