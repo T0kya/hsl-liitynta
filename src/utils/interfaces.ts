@@ -11,8 +11,9 @@ export interface Facility {
         bbox : number[]
         type : string
         coordinates : []
-    }
-   type: string
+    },
+    pricingMethod: string
+    type: string
 }
 
 interface i18n {
@@ -20,41 +21,20 @@ interface i18n {
     sv : string
     en : string
 }
-
-interface FacilityPricing {
-    usage: string
-    capacityType: string
-    maxCapacity: number
-    dayType: string
-    time: {
-        from: string
-        until: string
-    }
-    price: string | null
-    priceExtra: string | null
-    priceOther: string | null
-}
-
-interface UnvailableCapacity {
-    capacityType: string
-        usage: string
-        capacity: number
+export interface Utilization {
+    capacity: number
+    spacesAvailable: number
 }
 
 export interface DetailedFacility {
-    id: number
-    name: i18n
-    pricingMethod: string
-    dayType: string
+    id : number
     builtCapacity: {
-        ELECTRIC_CAR: number
-        DISABLED: number
         CAR: number
     }
-    pricing: FacilityPricing[]
-    unavailableCapacities: UnvailableCapacity[]
-    services: string[]
     openingHours: {
-        openNow: boolean
-    }    
+        openNow : boolean
+    }
 }
+
+
+export type FilterTypes = 'FREE' | 'FREETWELWEHOURS' | 'CUSTOM'
