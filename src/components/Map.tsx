@@ -3,7 +3,7 @@ import axios from 'axios'
 import L from 'leaflet'
 import  React, { useCallback, useEffect, useState } from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { FeatureGroup, MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
+import { FeatureGroup, LayerGroup,Circle, MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
 import { DetailedFacility, Facility, FilterTypes, Utilization } from '../utils/interfaces'
 import { Checkbox } from './Filters/Checkbox'
 
@@ -176,6 +176,7 @@ export function Map ({markers}: Props) {
             return (
               <div key={marker.id}>
                 <Marker 
+                  key={marker.id} 
                   position={[marker.location.bbox[1], marker.location.bbox[0]]} 
                   icon={details?.openingHours.openNow ? greenIcon : redIcon}
                   eventHandlers={{
@@ -186,11 +187,11 @@ export function Map ({markers}: Props) {
                   }}>
                   <Popup>
                     {marker.name.fi}<br />
-                    Paikkoja yhteensä: {details?.builtCapacity.CAR}<br />
+                Paikkoja yhteensä: {details?.builtCapacity.CAR}<br />
                     {utilization.length !== 0 && <span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> }
                   </Popup>
                 </Marker>
-                <Rectangle  bounds={[
+                <Rectangle key={marker.id} bounds={[
                   [marker.location.bbox[1], marker.location.bbox[0]],
                   [marker.location.bbox[3], marker.location.bbox[2]],
                 ]} />

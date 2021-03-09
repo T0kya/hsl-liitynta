@@ -3,7 +3,6 @@ import axios from 'axios'
 import { Map } from './components/Map'
 import styled from '@emotion/styled'
 import {Facility } from './utils/interfaces'
-import { css, Global } from '@emotion/react'
 
 const AppContainer = styled.div `
   display: block;
@@ -15,6 +14,7 @@ const AppContainer = styled.div `
 const Header = styled.div `
   margin: 20px auto;
   width: 90%;
+  color: ${props => props.theme.color.primary};
 `
 
 const MapContainer = styled.div `
@@ -27,7 +27,7 @@ interface ApiResults {
 }
 
 
-function App() {
+export function App() {
 
   const [carParkPoints, setCarParkPoints] = useState<Facility[] | null>(null)
  
@@ -54,18 +54,6 @@ function App() {
   
   return (
     <AppContainer>
-      <Global
-        styles={css`
-            body {
-              h1,h2,h3 {  
-                font-family: 'Raleway', sans-serif;
-              }
-              p {
-                font-family: 'Nunito', sans-serif;
-              }
-            }
-          `}
-      />
       <Header>
         <h2>HSL liityntäpysäköintipaikat</h2>
       </Header>

@@ -3,19 +3,7 @@ import React, { ChangeEventHandler } from 'react'
 const Container = styled.div `
     position: relative;
 `
-const CheckboxContainer = styled.div`
-  height: 35px;
-  width: 35px;
-  border-radius: 30px;
-  color: green;
-  font-size: 9px;
-  display: flex;
-  background-color: white;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
-`
+
 const HiddenCheckbox = styled.input`
   border: 0;
   clip: rect(0 0 0 0);
@@ -35,13 +23,15 @@ const StyledCheckbox = styled.div<{checked: boolean}>`
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: ${props => (props.checked ? 'green' : 'white')};
+ background-color: ${props => props.checked ?  props.theme.color.green : 'white'};
   border-radius: 50%;
-  border: 2px solid green;
+  border: 2px solid ${props => props.theme.color.green};
   transition: all 150ms;
-color: ${props => (props.checked ? 'white' : 'green')};
-font-size: 0.5rem;
+  color: ${props => props.checked ? 'white':  props.theme.color.green};
+  font-size: 0.9rem;
 `
+ 
+
 
 interface Props {
     onChange: ChangeEventHandler
