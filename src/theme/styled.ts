@@ -10,7 +10,7 @@ declare module '@emotion/react' {
     spacing: {
         small: number
         medium: number
-    },
-    backgroundColor: string
+        large: number
+    }
   }
 }

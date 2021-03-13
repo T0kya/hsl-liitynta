@@ -1,5 +1,6 @@
 
 import { css, Global,ThemeProvider } from '@emotion/react'
+import emotionReset from 'emotion-reset'
 
 
 import { App } from './App'
@@ -11,6 +12,8 @@ export function Root() {
     <ThemeProvider theme={theme}>
       <Global
         styles={css`
+         ${emotionReset}
+
         body {
           font-family: 'Nunito', sans-serif;
           h1,h2,h3 {  
