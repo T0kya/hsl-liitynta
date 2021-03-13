@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import axios from 'axios'
 import { motion } from 'framer-motion'
-import  React, { useEffect, useState } from 'react'
+import   { useEffect, useState } from 'react'
 import { Header } from '../components/Header'
 import { Map } from '../components/Map'
 import { Facility } from '../utils/interfaces'
@@ -9,7 +9,7 @@ import Image from './roadImage.jpg'
 
 const MapContainer = styled.div `
   width: 100%;
-  height: 70vh;
+  height: 90vh;
 `
 const TwoColumns = styled(motion.div) `
     width: 80%;

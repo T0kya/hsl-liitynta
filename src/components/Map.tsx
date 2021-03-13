@@ -93,6 +93,7 @@ export function Map ({markers}: Props) {
   })
   const [activeFilters, setActiveFilters] = useState<string[]>([])
   const [currentList, setCurrentList] = useState<Facility[] | null>(markers)
+  const [currentOpeningHours, setOpeningHours] = useState<OpeningHours>()
 
   const handleUpdate = (filters: { [key in FilterTypes]: boolean }) => {
     const activeFilterNames = Object.keys(filters).filter(
@@ -120,7 +121,6 @@ export function Map ({markers}: Props) {
     if (activeFilters.length === 0) {
       return markers
     }
-    console.log(activeFilters)
     return markers.filter(item => activeFilters.some(activeFilterName => item.pricingMethod.includes(activeFilterName)))
     
    
@@ -164,13 +164,12 @@ export function Map ({markers}: Props) {
   }
 
   function getOpeningHours(details: {SUNDAY: OpeningHours, SATURDAY: OpeningHours, BUSINESS_DAY: OpeningHours}) {
-    console.log(details.SATURDAY)
     if(isSaturday(new Date())) {
-      return  details.SATURDAY
+      setOpeningHours(details.SATURDAY)
     } else if (isSunday(new Date())) {
-      return details.SUNDAY 
+      setOpeningHours(details.SUNDAY) 
     } 
-    return  details.BUSINESS_DAY
+    setOpeningHours(details.BUSINESS_DAY)
   }
 
   
@@ -208,7 +207,7 @@ export function Map ({markers}: Props) {
         <FeatureGroup pathOptions={purpleOptions}>
           {currentList && currentList.map(marker => {
             const details = detailedPoints?.find(id => id.id === marker.id)
-            const openingHours = details && getOpeningHours(details.openingHours.byDayType)
+            const openingHours = currentOpeningHours
             return (
               <div key={marker.id}>
                 <Marker 
@@ -218,9 +217,12 @@ export function Map ({markers}: Props) {
                     click: () => {
                       setUtilization([])
                       getUtilization(marker.id)
+                      setOpeningHours(undefined)
+                      details && getOpeningHours(details.openingHours.byDayType)
                     },
                   }}>
-                  <Popup>
+                  <Popup
+                    closeOnClick={false}>
                     <h4>{marker.name.fi}</h4>
                     {openingHours && <span>Avoinna tänään: {openingHours?.from} - {openingHours?.until}</span>}<br />
                     Paikkoja yhteensä: {details?.builtCapacity.CAR}
