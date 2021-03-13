@@ -8,7 +8,7 @@ import ReactDOMServer from 'react-dom/server'
 import { FeatureGroup,  MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
 import { DetailedFacility, Facility, FilterTypes, Utilization, OpeningHours } from '../utils/interfaces'
 import { Checkbox } from './Filters/Checkbox'
-
+import { Link } from 'react-router-dom'
 
 
 const Container = styled.div `
@@ -174,7 +174,6 @@ export function Map ({markers}: Props) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
        
-        {console.log(detailedPoints)}
         <FeatureGroup pathOptions={purpleOptions}>
           {currentList && currentList.map(marker => {
             const details = detailedPoints?.find(id => id.id === marker.id)
@@ -195,7 +194,7 @@ export function Map ({markers}: Props) {
                     {openingHours && <span>Avoinna tänään: {openingHours?.from} - {openingHours?.until}</span>}<br />
                     Paikkoja yhteensä: {details?.builtCapacity.CAR}
                     {utilization.length !== 0 && <><br /><span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> </>}
-                    
+                    <Link to={`/asema/${marker.id}`}>Katso lisätiedot</Link>
                   </Popup>
                 </Marker>
                 <Rectangle key={marker.id} bounds={[

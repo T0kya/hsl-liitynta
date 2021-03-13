@@ -1,8 +1,14 @@
-import  { useEffect, useState } from 'react'
+import  React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Map } from './components/Map'
 import styled from '@emotion/styled'
-import {Facility } from './utils/interfaces'
+import { Facility } from './utils/interfaces'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom'
+import { ParkingSlot } from './components/ParkingSlot'
 
 const AppContainer = styled.div `
   display: block;
@@ -53,19 +59,28 @@ export function App() {
 
   
   return (
-    <AppContainer>
-      <Header>
-        <h2>HSL liityntäpysäköintipaikat</h2>
-      </Header>
-      {console.log(carParkPoints)}
-      {carParkPoints &&
-     <MapContainer>
-       <Map markers={carParkPoints} /> 
-     </MapContainer>
-     
-      }
-      
-    </AppContainer>
+    <Router>
+      <AppContainer>
+        <Header>
+          <h2>HSL liityntäpysäköintipaikat</h2>
+        </Header>
+        {console.log(carParkPoints)}
+        
+      </AppContainer>
+      <Switch>
+        <Route path="/asema/:id">
+          <ParkingSlot />
+        </Route>
+        <Route path="/">
+          {carParkPoints &&
+          <MapContainer>
+            <Map markers={carParkPoints} /> 
+          </MapContainer>
+          }
+        </Route>
+      </Switch>
+    </Router>
+    
   )
 }
 

@@ -31,7 +31,7 @@ export interface OpeningHours {
     until: string
 }
 
-export interface DetailedFacility {
+export interface DetailedFacility extends Facility {
     id : number
     builtCapacity: {
         CAR: number
