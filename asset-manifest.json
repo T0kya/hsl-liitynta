@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/hsl-liitynta/static/js/main.96343f03.chunk.js",
-    "main.js.map": "/hsl-liitynta/static/js/main.96343f03.chunk.js.map",
+    "main.js": "/hsl-liitynta/static/js/main.b7348a8d.chunk.js",
+    "main.js.map": "/hsl-liitynta/static/js/main.b7348a8d.chunk.js.map",
     "runtime-main.js": "/hsl-liitynta/static/js/runtime-main.1e828074.js",
     "runtime-main.js.map": "/hsl-liitynta/static/js/runtime-main.1e828074.js.map",
-    "static/js/2.a9c039d6.chunk.js": "/hsl-liitynta/static/js/2.a9c039d6.chunk.js",
-    "static/js/2.a9c039d6.chunk.js.map": "/hsl-liitynta/static/js/2.a9c039d6.chunk.js.map",
+    "static/js/2.caae9739.chunk.js": "/hsl-liitynta/static/js/2.caae9739.chunk.js",
+    "static/js/2.caae9739.chunk.js.map": "/hsl-liitynta/static/js/2.caae9739.chunk.js.map",
     "static/js/3.924caa86.chunk.js": "/hsl-liitynta/static/js/3.924caa86.chunk.js",
     "static/js/3.924caa86.chunk.js.map": "/hsl-liitynta/static/js/3.924caa86.chunk.js.map",
     "index.html": "/hsl-liitynta/index.html",
-    "static/js/2.a9c039d6.chunk.js.LICENSE.txt": "/hsl-liitynta/static/js/2.a9c039d6.chunk.js.LICENSE.txt"
+    "static/js/2.caae9739.chunk.js.LICENSE.txt": "/hsl-liitynta/static/js/2.caae9739.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.1e828074.js",
-    "static/js/2.a9c039d6.chunk.js",
-    "static/js/main.96343f03.chunk.js"
+    "static/js/2.caae9739.chunk.js",
+    "static/js/main.b7348a8d.chunk.js"
   ]
 }
