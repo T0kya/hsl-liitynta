@@ -54,12 +54,22 @@ const Icon = styled.div<{color: string}> `
 
 const Filters = styled.div `
   display: block;
-  margin: 15px 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(255,255,255,0.7);
+  padding: ${props => props.theme.spacing.large}px;
+  z-index: 999;
 `
 const FilterGroup = styled.div `
   display:flex;
   width: 100%;
+  flex-direction: column;
   align-items: center;
+
+  & > * {
+    margin-top: ${props => props.theme.spacing.medium}px;
+  }
 `
 
 interface Props {
@@ -167,7 +177,28 @@ export function Map ({markers}: Props) {
   const purpleOptions = { color: 'purple' }
 
   return (
-    <Container>    
+    <Container>   
+      <Filters>
+        <h3>Maksuton:</h3>
+        <FilterGroup>
+          <label>
+            <Checkbox
+              name="12H"
+              checked={checked['12H']}
+              onChange={toggleChecked}
+            >12h</Checkbox>
+           
+          </label>
+          <label>
+            <Checkbox
+              name="247"
+              checked={checked['247']}
+              onChange={toggleChecked}
+            >24h</Checkbox>
+           
+          </label>
+        </FilterGroup>
+      </Filters> 
       <StyledMap center={[60.402778, 25.029167]} zoom={11} >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -208,28 +239,7 @@ export function Map ({markers}: Props) {
           )}
         </FeatureGroup>
       </StyledMap>
-      <Filters>
-        
-        <h3>Maksuton pysäköinti:</h3>
-        <FilterGroup>
-          <label>
-            <Checkbox
-              name="12H"
-              checked={checked['12H']}
-              onChange={toggleChecked}
-            >12h</Checkbox>
-           
-          </label>
-          <label>
-            <Checkbox
-              name="247"
-              checked={checked['247']}
-              onChange={toggleChecked}
-            >24h</Checkbox>
-           
-          </label>
-        </FilterGroup>
-      </Filters>
+      
     </Container>
   )
 }
