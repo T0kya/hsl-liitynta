@@ -29,7 +29,8 @@ const StyledCheckbox = styled.div<{checked: boolean}>`
   border: 2px solid ${props => props.theme.color.primary};
   transition: all 150ms;
   color: ${props => props.checked ? props.theme.color.white:  props.theme.color.primary};
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  text-align: center;
 `
  
 

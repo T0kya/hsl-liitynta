@@ -2,13 +2,13 @@ import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import axios from 'axios'
 import { isSaturday, isSunday } from 'date-fns'
-import L from 'leaflet'
 import  React, { useCallback, useEffect, useState } from 'react'
-import ReactDOMServer from 'react-dom/server'
-import { FeatureGroup,  MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
+import { FeatureGroup,  MapContainer, Rectangle, TileLayer } from 'react-leaflet'
+import { isTemplateExpression } from 'typescript'
 import { DetailedFacility, Facility, FilterTypes, Utilization, OpeningHours } from '../utils/interfaces'
 import { Checkbox } from './Filters/Checkbox'
-import { Link } from 'react-router-dom'
+import { MapMarker } from './MapMarker'
+
 
 
 const Container = styled.div `
@@ -28,29 +28,6 @@ const StyledMap = styled(MapContainer) `
 
 `
 
-const Icon = styled.div<{color: string}> `
-  position: relative;
-  
-  border-radius: 50% 50% 50% 0;
-  border: 4px solid ${props => props.color};
-  width: 20px;
-  height: 20px;
-  transform: rotate(-45deg);
-  background-color: white;
-
-  &::after {
-    position: absolute;
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  margin-left: -5px;
-  margin-top: -5px;
-  background-color: ${props => props.color};
-  }
-`
 
 const Filters = styled.div `
   display: block;
@@ -80,11 +57,8 @@ type CheckedState = {
   [key in FilterTypes]: boolean
 }
 export function Map ({markers}: Props) {
-
-  const theme = useTheme()
-
   const [detailedPoints, setDetailedPoints] = useState<DetailedFacility[] | null>(null)
-  const [utilization, setUtilization] = useState<Utilization[]>([])
+  const [isOpenFilter, setIsOpenFilter] = useState(false)
 
   const [checked, setChecked] = useState<CheckedState>({
     '12H': false,
@@ -93,7 +67,6 @@ export function Map ({markers}: Props) {
   })
   const [activeFilters, setActiveFilters] = useState<string[]>([])
   const [currentList, setCurrentList] = useState<Facility[] | null>(markers)
-  const [currentOpeningHours, setOpeningHours] = useState<OpeningHours>()
 
   const handleUpdate = (filters: { [key in FilterTypes]: boolean }) => {
     const activeFilterNames = Object.keys(filters).filter(
@@ -102,6 +75,10 @@ export function Map ({markers}: Props) {
 
     setActiveFilters(activeFilterNames)
     setChecked(filters)
+  }
+
+  const handleChangeOpen = () => {
+    setIsOpenFilter(!isOpenFilter)
   }
 
   const toggleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,38 +117,6 @@ export function Map ({markers}: Props) {
     const filtered = filterList()
     setCurrentList(filtered)
   }, [activeFilters])
-
-  const greenIcon = L.divIcon({
-    className: 'custom-icon',
-    html: ReactDOMServer.renderToString(<Icon color={theme.color.primary}/>)    
-  })
-
-  const redIcon = L.divIcon({
-    className: 'custom-icon',
-    html: ReactDOMServer.renderToString(<Icon color={theme.color.grey}/>)    
-  })
-  
-  function getUtilization(id:number){
-    axios.get<Utilization[]>(`https://p.hsl.fi/api/v1/facilities/${id}/utilization.json`).then((response) => {
-   
-      setUtilization(response.data)
-    }).catch((error) => {
-      console.log(error)
-    }).then(() => {
-
-      //execute
-    })
-  }
-
-  function getOpeningHours(details: {SUNDAY: OpeningHours, SATURDAY: OpeningHours, BUSINESS_DAY: OpeningHours}) {
-    if(isSaturday(new Date())) {
-      setOpeningHours(details.SATURDAY)
-    } else if (isSunday(new Date())) {
-      setOpeningHours(details.SUNDAY) 
-    } 
-    setOpeningHours(details.BUSINESS_DAY)
-  }
-
   
   const purpleOptions = { color: 'purple' }
 
@@ -197,6 +142,14 @@ export function Map ({markers}: Props) {
            
           </label>
         </FilterGroup>
+        <FilterGroup>
+          <label>
+            <Checkbox
+              name="open"
+              checked={isOpenFilter}
+              onChange={handleChangeOpen}><span>Auki nyt</span></Checkbox>
+          </label>
+        </FilterGroup>
       </Filters> 
       <StyledMap center={[60.402778, 25.029167]} zoom={11} >
         <TileLayer
@@ -207,29 +160,14 @@ export function Map ({markers}: Props) {
         <FeatureGroup pathOptions={purpleOptions}>
           {currentList && currentList.map(marker => {
             const details = detailedPoints?.find(id => id.id === marker.id)
-            const openingHours = currentOpeningHours
+          
             return (
               <div key={marker.id}>
-                <Marker 
-                  position={[marker.location.bbox[1], marker.location.bbox[0]]} 
-                  icon={details?.openingHours.openNow ? greenIcon : redIcon}
-                  eventHandlers={{
-                    click: () => {
-                      setUtilization([])
-                      getUtilization(marker.id)
-                      setOpeningHours(undefined)
-                      details && getOpeningHours(details.openingHours.byDayType)
-                    },
-                  }}>
-                  <Popup
-                    closeOnClick={false}>
-                    <h4>{marker.name.fi}</h4>
-                    {openingHours && <span>Avoinna tänään: {openingHours?.from} - {openingHours?.until}</span>}<br />
-                    Paikkoja yhteensä: {details?.builtCapacity.CAR}
-                    {utilization.length !== 0 && <><br /><span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> </>}
-                    <Link to={`/asema/${marker.id}`}>Katso lisätiedot</Link>
-                  </Popup>
-                </Marker>
+                {isOpenFilter ? 
+                  details && details.openingHours.openNow && 
+                  <MapMarker details={details} marker={marker} />
+                  :  details && <MapMarker details={details} marker={marker} />
+                }
                 <Rectangle key={marker.id} bounds={[
                   [marker.location.bbox[1], marker.location.bbox[0]],
                   [marker.location.bbox[3], marker.location.bbox[2]],
