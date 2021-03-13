@@ -16,8 +16,21 @@ export function Root() {
 
         body {
           font-family: 'Nunito', sans-serif;
-          h1,h2,h3 {  
+          font-size: 16px;
+          h1,h2,h3, h4 {  
             font-family: 'Raleway', sans-serif;
+          }
+          h1 {
+            font-size: 2rem;
+          }
+          h2 {
+            font-size: 1.6rem;
+          }
+          h3 {
+            font-size: 1.4rem;
+          }
+          h4 {
+            font-size: 1.2rem;
           }
           p {
             font-family: 'Nunito', sans-serif;

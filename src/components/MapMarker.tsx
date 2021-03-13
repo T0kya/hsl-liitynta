@@ -93,7 +93,7 @@ export function MapMarker({marker, details } : Props) {
       {openingHours && <span>Avoinna tänään: {openingHours?.from} - {openingHours?.until}</span>}<br />
       Paikkoja yhteensä: {details?.builtCapacity.CAR}
       {utilization.length !== 0 && <><br /><span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> </>}
-      <Link to={`/asema/${marker.id}`}>Katso lisätiedot</Link>
+      <p><Link to={`/asema/${marker.id}`}>Katso lisätiedot</Link></p>
     </Popup>
   </Marker> 
 }
