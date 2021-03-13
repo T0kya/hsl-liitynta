@@ -1,10 +1,12 @@
+import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import axios from 'axios'
+import { isSaturday, isSunday } from 'date-fns'
 import L from 'leaflet'
 import  React, { useCallback, useEffect, useState } from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { FeatureGroup, LayerGroup,Circle, MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
-import { DetailedFacility, Facility, FilterTypes, Utilization } from '../utils/interfaces'
+import { FeatureGroup,  MapContainer, Marker, Popup, Rectangle, TileLayer } from 'react-leaflet'
+import { DetailedFacility, Facility, FilterTypes, Utilization, OpeningHours } from '../utils/interfaces'
 import { Checkbox } from './Filters/Checkbox'
 
 
@@ -69,6 +71,8 @@ type CheckedState = {
 }
 export function Map ({markers}: Props) {
 
+  const theme = useTheme()
+
   const [detailedPoints, setDetailedPoints] = useState<DetailedFacility[] | null>(null)
   const [utilization, setUtilization] = useState<Utilization[]>([])
 
@@ -129,12 +133,12 @@ export function Map ({markers}: Props) {
 
   const greenIcon = L.divIcon({
     className: 'custom-icon',
-    html: ReactDOMServer.renderToString(<Icon color="green"/>)    
+    html: ReactDOMServer.renderToString(<Icon color={theme.color.primary}/>)    
   })
 
   const redIcon = L.divIcon({
     className: 'custom-icon',
-    html: ReactDOMServer.renderToString(<Icon color="red"/>)    
+    html: ReactDOMServer.renderToString(<Icon color={theme.color.grey}/>)    
   })
   
   function getUtilization(id:number){
@@ -149,15 +153,17 @@ export function Map ({markers}: Props) {
     })
   }
 
-  const center = [51.505, -0.09]
-  const rectangle = [
-    [51.49, -0.08],
-    [51.5, -0.06],
-  ]
+  function getOpeningHours(details: {SUNDAY: OpeningHours, SATURDAY: OpeningHours, BUSINESS_DAY: OpeningHours}) {
+    console.log(details.SATURDAY)
+    if(isSaturday(new Date())) {
+      return  details.SATURDAY
+    } else if (isSunday(new Date())) {
+      return details.SUNDAY 
+    } 
+    return  details.BUSINESS_DAY
+  }
+
   
-  const fillBlueOptions = { fillColor: 'blue' }
-  const fillRedOptions = { fillColor: 'red' }
-  const greenOptions = { color: 'green', fillColor: 'green' }
   const purpleOptions = { color: 'purple' }
 
   return (
@@ -168,15 +174,14 @@ export function Map ({markers}: Props) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
        
-         
+        {console.log(detailedPoints)}
         <FeatureGroup pathOptions={purpleOptions}>
           {currentList && currentList.map(marker => {
             const details = detailedPoints?.find(id => id.id === marker.id)
-         
+            const openingHours = details && getOpeningHours(details.openingHours.byDayType)
             return (
               <div key={marker.id}>
                 <Marker 
-                  key={marker.id} 
                   position={[marker.location.bbox[1], marker.location.bbox[0]]} 
                   icon={details?.openingHours.openNow ? greenIcon : redIcon}
                   eventHandlers={{
@@ -186,9 +191,11 @@ export function Map ({markers}: Props) {
                     },
                   }}>
                   <Popup>
-                    {marker.name.fi}<br />
-                Paikkoja yhteensä: {details?.builtCapacity.CAR}<br />
-                    {utilization.length !== 0 && <span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> }
+                    <h4>{marker.name.fi}</h4>
+                    {openingHours && <span>Avoinna tänään: {openingHours?.from} - {openingHours?.until}</span>}<br />
+                    Paikkoja yhteensä: {details?.builtCapacity.CAR}
+                    {utilization.length !== 0 && <><br /><span>Paikkoja vapaana: {utilization[0].spacesAvailable}</span> </>}
+                    
                   </Popup>
                 </Marker>
                 <Rectangle key={marker.id} bounds={[

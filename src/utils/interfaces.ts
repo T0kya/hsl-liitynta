@@ -26,12 +26,22 @@ export interface Utilization {
     spacesAvailable: number
 }
 
+export interface OpeningHours {
+    from: string
+    until: string
+}
+
 export interface DetailedFacility {
     id : number
     builtCapacity: {
         CAR: number
     }
     openingHours: {
+        byDayType: {
+            SUNDAY: OpeningHours,
+            SATURDAY: OpeningHours,
+            BUSINESS_DAY: OpeningHours
+        }
         openNow : boolean
     }
 }

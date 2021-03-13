@@ -7,7 +7,6 @@ import { theme } from './theme/theme'
 
 
 export function Root() {
-  console.log(theme)
   return (
     <ThemeProvider theme={theme}>
       <Global

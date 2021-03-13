@@ -23,11 +23,11 @@ const StyledCheckbox = styled.div<{checked: boolean}>`
   justify-content: center;
   width: 40px;
   height: 40px;
- background-color: ${props => props.checked ?  props.theme.color.green : 'white'};
+ background-color: ${props => props.checked ?  props.theme.color.primary : props.theme.color.white};
   border-radius: 50%;
-  border: 2px solid ${props => props.theme.color.green};
+  border: 2px solid ${props => props.theme.color.primary};
   transition: all 150ms;
-  color: ${props => props.checked ? 'white':  props.theme.color.green};
+  color: ${props => props.checked ? props.theme.color.white:  props.theme.color.primary};
   font-size: 0.9rem;
 `
  

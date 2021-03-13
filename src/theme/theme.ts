@@ -1,8 +1,8 @@
 export const theme = {
   color: {
     primary: '#1b8185',
-    green: '#388a46',
-    red: '#913b34'
+    grey: '#9e9e9e',
+    white: '#ffffff'
   },
   spacing: {
     small: 4,
