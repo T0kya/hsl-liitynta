@@ -6,6 +6,7 @@ declare module '@emotion/react' {
       primary: string
       grey: string
       white: string
+      border: string
     },
     spacing: {
         small: number

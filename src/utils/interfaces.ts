@@ -31,6 +31,14 @@ export interface OpeningHours {
     until: string
 }
 
+interface Pricing {
+    capacityType: string
+dayType: string
+maxCapacity: number
+price: {fi: string, sv: string, en: string}
+time: OpeningHours
+usage: string
+}
 export interface DetailedFacility extends Facility {
     id : number
     builtCapacity: {
@@ -43,6 +51,11 @@ export interface DetailedFacility extends Facility {
             BUSINESS_DAY: OpeningHours
         }
         openNow : boolean
+    }
+    services: string[]
+    pricing: Pricing[]
+    paymentInfo: {
+        paymentMethods: string[]
     }
 }
 

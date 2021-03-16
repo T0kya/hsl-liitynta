@@ -30,24 +30,6 @@ const TwoColumns = styled(motion.div) `
 
    
 `
-
-//animations
-
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      delayChildren: 0.5,
-      staggerChildren: 0.5
-    }
-  }
-}
-
-const item = {
-  hidden: { y: '100%' },
-  show: { y: 0 }
-}
 interface ApiResults {
     hasMore: boolean;
     results: Facility[]
@@ -57,17 +39,20 @@ export function Frontpage(){
  
 
   useEffect(() => {
-    axios.get<ApiResults>('https://p.hsl.fi/api/v1/facilities.json').then((response) => {
-      // handle success
-      setCarParkPoints(response.data.results.filter(item => item.type === 'CAR'))
-       
-    }).catch(function (error) {
-      // handle error
-      console.log(error)
-    })
-      .then(function () {
-        // always executed
+    if(!carParkPoints) {
+      axios.get<ApiResults>('https://p.hsl.fi/api/v1/facilities.json').then((response) => {
+        // handle success
+        setCarParkPoints(response.data.results.filter(item => item.type === 'CAR'))
+         
+      }).catch(function (error) {
+        // handle error
+        console.log(error)
       })
+        .then(function () {
+          // always executed
+        })
+    }
+    
       
       
   },  [])

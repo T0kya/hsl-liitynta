@@ -4,6 +4,8 @@ const Container = styled.header `
     padding: ${props => props.theme.spacing.large}px;
     background-color: ${props => props.theme.color.primary};
     color: ${props => props.theme.color.white};
+    display: flex;
+    align-items: center;
 `
 
 interface Props {

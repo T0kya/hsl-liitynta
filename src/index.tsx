@@ -1,11 +1,16 @@
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 import { Root } from './Root'
+import { Provider } from 'react-translated'
+import translation from './translations/translation'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Root />
+    <Provider language="fi" translation={translation}>
+      <Root />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 )
