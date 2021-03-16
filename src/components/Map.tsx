@@ -1,7 +1,7 @@
 
 import styled from '@emotion/styled'
 import axios from 'axios'
-import  React, { useCallback, useEffect, useState } from 'react'
+import  React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FeatureGroup,  MapContainer, Rectangle, TileLayer } from 'react-leaflet'
 import Skeleton from 'react-loading-skeleton'
 import { DetailedFacility, Facility, FilterTypes } from '../utils/interfaces'
@@ -58,6 +58,7 @@ type CheckedState = {
 
 export function Map ({markers}: Props) {
   const [detailedPoints, setDetailedPoints] = useState<DetailedFacility[] | null>(null)
+  const mountedRef = useRef(true)
 
   const [checked, setChecked] = useState<CheckedState>({
     '12H': false,
@@ -113,10 +114,17 @@ export function Map ({markers}: Props) {
     
     promises && 
       Promise.all(promises).then(data => {
+        if (!mountedRef.current) return null
         setDetailedPoints(data)
       })
     
   },  [])
+
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   useEffect(() => {
     const filtered = filterList()

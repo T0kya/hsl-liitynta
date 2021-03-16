@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import axios from 'axios'
-import   React, { useEffect, useState } from 'react'
+import   React, { useEffect, useRef, useState } from 'react'
 import { Header } from '../components/Header'
 import { Map } from '../components/Map'
 import { Facility } from '../utils/interfaces'
@@ -17,12 +17,10 @@ const MapContainer = styled.div `
 export function Frontpage(){
   const dispatch = useDispatch()
   const { facilities, isLoading, isError } = useSelector((state) => state.facilities)
-
+  
 
   useEffect(() => {
-    
     async function fetchData() {
-    
       dispatch({ type: 'FETCH_FACILITIES' })
 
       const response = await getFacilities()
@@ -32,15 +30,20 @@ export function Frontpage(){
           type: 'FETCH_FACILITIES_SUCCESS',
           payload: { response: response.value }
         })
+        
+        
       } else {
         dispatch({ type: 'FETCH_FACILITIES_FAILURE' })
       }
     }
-
-
-    fetchData()
+    if(facilities.length === 0) {
+      fetchData()
+    }
+    
     
   }, [dispatch])
+
+  
   return (
     <>
       <Header>
