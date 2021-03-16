@@ -7,11 +7,11 @@ import { Provider } from 'react-translated'
 import translation from './translations/translation'
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider language="fi" translation={translation}>
       <Root />
     </Provider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 )
 
