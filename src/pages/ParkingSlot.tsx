@@ -12,8 +12,9 @@ import { StyledLink } from '../components/StyledLink'
 import { DetailedFacility } from '../utils/interfaces'
 
 
-const Name = styled.h2 `
+const Name = styled.h3 `
   margin: 0 auto;
+  padding: 0 10px;
 `
 
 const Content = styled.div `
