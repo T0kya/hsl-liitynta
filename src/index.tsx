@@ -3,13 +3,17 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 import { Root } from './Root'
-import { Provider } from 'react-translated'
+import { Provider as TranslateProvider } from 'react-translated'
+import { Provider } from 'react-redux'
 import translation from './translations/translation'
+import {store} from './setup/redux'
 
 ReactDOM.render(
   <React.Fragment>
-    <Provider language="fi" translation={translation}>
-      <Root />
+    <Provider store={store}>
+      <TranslateProvider language="fi" translation={translation}>
+        <Root />
+      </TranslateProvider>
     </Provider>
   </React.Fragment>,
   document.getElementById('root')

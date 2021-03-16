@@ -60,4 +60,4 @@ export interface DetailedFacility extends Facility {
 }
 
 
-export type FilterTypes = '12H' | '247' | 'CUSTOM'
+export type FilterTypes = '12H' | '247' | 'CUSTOM' 

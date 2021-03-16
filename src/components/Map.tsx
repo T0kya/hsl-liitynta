@@ -1,11 +1,10 @@
-import { useTheme } from '@emotion/react'
+
 import styled from '@emotion/styled'
 import axios from 'axios'
-import { isSaturday, isSunday } from 'date-fns'
 import  React, { useCallback, useEffect, useState } from 'react'
 import { FeatureGroup,  MapContainer, Rectangle, TileLayer } from 'react-leaflet'
-import { isTemplateExpression } from 'typescript'
-import { DetailedFacility, Facility, FilterTypes, Utilization, OpeningHours } from '../utils/interfaces'
+import Skeleton from 'react-loading-skeleton'
+import { DetailedFacility, Facility, FilterTypes } from '../utils/interfaces'
 import { Checkbox } from './Filters/Checkbox'
 import { MapMarker } from './MapMarker'
 
@@ -56,15 +55,17 @@ interface Props {
 type CheckedState = {
   [key in FilterTypes]: boolean
 }
+
 export function Map ({markers}: Props) {
   const [detailedPoints, setDetailedPoints] = useState<DetailedFacility[] | null>(null)
-  const [isOpenFilter, setIsOpenFilter] = useState(false)
 
   const [checked, setChecked] = useState<CheckedState>({
     '12H': false,
     '247': false,
-    CUSTOM: false,
+    CUSTOM: false
   })
+
+  const [openFilter, setOpenFilter] = useState<boolean>(false)
   const [activeFilters, setActiveFilters] = useState<string[]>([])
   const [currentList, setCurrentList] = useState<Facility[] | null>(markers)
 
@@ -77,8 +78,9 @@ export function Map ({markers}: Props) {
     setChecked(filters)
   }
 
-  const handleChangeOpen = () => {
-    setIsOpenFilter(!isOpenFilter)
+
+  const toggleOpen = () => {
+    setOpenFilter(!openFilter)
   }
 
   const toggleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,22 +88,25 @@ export function Map ({markers}: Props) {
       ...checked,
       [e.target.name]: !checked[e.target.name as FilterTypes]
     }
-
-
     handleUpdate(newValue)
   }
 
   const filterList = useCallback(() => {
-    if (!markers) {
-      return null
-    }
-    if (activeFilters.length === 0) {
+    if (activeFilters.length === 0 && !openFilter) {
       return markers
     }
+
+    if (openFilter) {
+      const currentOpenIds = detailedPoints?.filter(point => point.openingHours.openNow).map(item => item.id)
+      if(activeFilters.length !== 0) {
+        return markers.filter(marker => currentOpenIds?.some(openId => marker.id === openId)).filter(item => activeFilters.some(activeFilterName => item.pricingMethod.includes(activeFilterName)))
+      }
+      return markers.filter(marker => currentOpenIds?.some(openId => marker.id === openId))
+    }
+
     return markers.filter(item => activeFilters.some(activeFilterName => item.pricingMethod.includes(activeFilterName)))
     
-   
-  }, [activeFilters, detailedPoints])
+  }, [activeFilters, detailedPoints, openFilter])
 
   useEffect(() => {
     const promises = markers.map(point => { return axios.get<DetailedFacility>(`https://p.hsl.fi/api/v1/facilities/${point.id}.json`).then(res => res.data)})
@@ -116,7 +121,7 @@ export function Map ({markers}: Props) {
   useEffect(() => {
     const filtered = filterList()
     setCurrentList(filtered)
-  }, [activeFilters])
+  }, [activeFilters, openFilter])
   
   const purpleOptions = { color: 'purple' }
 
@@ -143,13 +148,16 @@ export function Map ({markers}: Props) {
           </label>
         </FilterGroup>
         <FilterGroup>
-          <label>
-            <Checkbox
-              name="open"
-              checked={isOpenFilter}
-              onChange={handleChangeOpen}><span>Auki nyt</span></Checkbox>
-          </label>
-        </FilterGroup>
+          {detailedPoints ?
+          
+            <label>
+              <Checkbox
+                name="open"
+                checked={openFilter}
+                onChange={toggleOpen}><span>Auki nyt</span></Checkbox>
+            </label>
+            : <Skeleton circle width={40} height={40}/>}
+        </FilterGroup> 
       </Filters> 
       <StyledMap center={[60.402778, 25.029167]} zoom={11} >
         <TileLayer
@@ -163,11 +171,8 @@ export function Map ({markers}: Props) {
           
             return (
               <div key={marker.id}>
-                {isOpenFilter ? 
-                  details && details.openingHours.openNow && 
-                  <MapMarker details={details} marker={marker} />
-                  :  details && <MapMarker details={details} marker={marker} />
-                }
+                <MapMarker details={details} marker={marker} />
+                
                 <Rectangle key={marker.id} bounds={[
                   [marker.location.bbox[1], marker.location.bbox[0]],
                   [marker.location.bbox[3], marker.location.bbox[2]],

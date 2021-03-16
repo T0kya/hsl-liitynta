@@ -4,7 +4,7 @@ import {
   Route
 } from 'react-router-dom'
 import { ParkingSlot } from './pages/ParkingSlot'
-import { Frontpage } from './pages/Frontpage'
+import { Frontpage }  from './pages/Frontpage'
 
 
 export function App() {

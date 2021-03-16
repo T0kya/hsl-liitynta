@@ -9,10 +9,6 @@ import { useState } from 'react'
 import axios from 'axios'
 import { isSaturday, isSunday } from 'date-fns'
 
-interface Props {
-    marker: Facility
-    details: DetailedFacility
-}
 
 
 const Icon = styled.div<{color: string}> `
@@ -38,6 +34,12 @@ const Icon = styled.div<{color: string}> `
   background-color: ${props => props.color};
   }
 `
+
+interface Props {
+  marker: Facility
+  details: DetailedFacility | undefined
+}
+
 
 export function MapMarker({marker, details } : Props) {
   const theme = useTheme()
@@ -78,7 +80,7 @@ export function MapMarker({marker, details } : Props) {
   const openingHours = currentOpeningHours
   return  <Marker 
     position={[marker.location.bbox[1], marker.location.bbox[0]]} 
-    icon={details?.openingHours.openNow ? greenIcon : redIcon}
+    icon={details ? details.openingHours.openNow ? greenIcon : redIcon : redIcon}
     eventHandlers={{
       click: () => {
         setUtilization([])
