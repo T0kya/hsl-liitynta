@@ -21,8 +21,13 @@ const Content = styled.div `
   width: 90%;
   margin: 1rem auto;
   display: grid;
+  box-sizing: border-box;
   grid-template-columns: 1fr 1fr;
   grid-gap: ${props => props.theme.spacing.large}px;
+
+  @media(max-width: 485px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 export function ParkingSlot() {

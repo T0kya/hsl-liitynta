@@ -12,8 +12,13 @@ export function Root() {
       <Global
         styles={css`
          ${emotionReset}
-
-        body {
+         html {
+            box-sizing: border-box;
+          }
+          *, *:before, *:after {
+            box-sizing: inherit;
+          }
+          body {
           font-family: 'Nunito', sans-serif;
           font-size: 16px;
           h1,h2,h3, h4 {  
