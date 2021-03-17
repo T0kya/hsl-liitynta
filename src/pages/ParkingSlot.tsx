@@ -10,6 +10,31 @@ import { Card } from '../components/Card/Card'
 import { Header } from '../components/Header'
 import { StyledLink } from '../components/StyledLink'
 import { DetailedFacility } from '../utils/interfaces'
+import { motion } from 'framer-motion'
+
+const pageVariants = {
+  initial: {
+    x: '100%',
+    transition: {
+      type: 'tween',
+      duration: 0.2
+    }
+  },
+  in: {
+    x: 0,
+    transition: {
+      type: 'tween',
+      duration: 0.2
+    }
+  },
+  out: {
+    x: '-100%',
+    transition: {
+      type: 'tween',
+      duration: 0.2
+    }
+  },
+}
 
 
 const Name = styled.h3 `
@@ -17,7 +42,7 @@ const Name = styled.h3 `
   padding: 0 10px;
 `
 
-const Content = styled.div `
+const Content = styled(motion.div) `
   width: 90%;
   margin: 1rem auto;
   display: grid;
@@ -29,6 +54,7 @@ const Content = styled.div `
     grid-template-columns: 1fr;
   }
 `
+
 
 export function ParkingSlot() {
   const [info, setInfo] = useState<DetailedFacility | null>()
@@ -53,23 +79,27 @@ export function ParkingSlot() {
 
 
   return (
-    <div>
+    <>
       <Header>
         <StyledLink color={theme.color.white} to="/"><Arrow color={theme.color.white}/>Takaisin</StyledLink>
         <Name>{info ? info.name.fi : <Skeleton />}</Name>
       </Header>
-      <Content>
-        <Card title="Aukioloajat">
-          {info ? 
-            <>
-              {info.openingHours.byDayType.BUSINESS_DAY && <p><strong>Arkipäivät:</strong> {info.openingHours.byDayType.BUSINESS_DAY.from} - {info.openingHours.byDayType.BUSINESS_DAY.until}</p>}
-              {info.openingHours.byDayType.SATURDAY && <p><strong>Lauantai:</strong> {info.openingHours.byDayType.SATURDAY.from} - {info.openingHours.byDayType.SATURDAY.until}</p>}
-              {info.openingHours.byDayType.SUNDAY && <p><strong>Sunnuntai:</strong> {info.openingHours.byDayType.SUNDAY.from} - {info.openingHours.byDayType.SUNDAY.until}</p>}
-            </>
-            : <Skeleton />
-          }
-        </Card>
-        {info?.services.length !== 0 &&
+      <motion.div initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}>
+        <Content>
+          <Card title="Aukioloajat">
+            {info ? 
+              <>
+                {info.openingHours.byDayType.BUSINESS_DAY && <p><strong>Arkipäivät:</strong> {info.openingHours.byDayType.BUSINESS_DAY.from} - {info.openingHours.byDayType.BUSINESS_DAY.until}</p>}
+                {info.openingHours.byDayType.SATURDAY && <p><strong>Lauantai:</strong> {info.openingHours.byDayType.SATURDAY.from} - {info.openingHours.byDayType.SATURDAY.until}</p>}
+                {info.openingHours.byDayType.SUNDAY && <p><strong>Sunnuntai:</strong> {info.openingHours.byDayType.SUNDAY.from} - {info.openingHours.byDayType.SUNDAY.until}</p>}
+              </>
+              : <Skeleton />
+            }
+          </Card>
+          {info?.services.length !== 0 &&
         <>
           {info ? 
             <Card title="Palvelut">
@@ -81,7 +111,7 @@ export function ParkingSlot() {
             </Card> : <Skeleton />
           }
         </> }
-        {info?.pricingMethod === 'CUSTOM' &&
+          {info?.pricingMethod === 'CUSTOM' &&
           <Card title="Pysäköintihinnasto">
             {info.pricing.map(price => {
               return <p key={price.capacityType}> <Translate text={price.capacityType} />: {price.price.fi}</p>
@@ -89,8 +119,10 @@ export function ParkingSlot() {
             )}
             <p><strong> Maksutavat: </strong></p><ul>{info.paymentInfo.paymentMethods.map(payment => <li key={payment}><Translate text={payment} /></li>)}</ul>
           </Card>
-        }
-      </Content>
-    </div>
+          
+          }
+        </Content>
+      </motion.div>
+    </>
   )
 }

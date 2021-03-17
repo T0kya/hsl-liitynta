@@ -5,19 +5,18 @@ import {
 } from 'react-router-dom'
 import { ParkingSlot } from './pages/ParkingSlot'
 import { Frontpage }  from './pages/Frontpage'
+import { AnimatePresence } from 'framer-motion'
 
 
 export function App() {
   return (
     <Router>
-      <Switch>
-        <Route path="/asema/:id">
-          <ParkingSlot />
-        </Route>
-        <Route path="/">
-          <Frontpage />
-        </Route>
-      </Switch>
+      <AnimatePresence>
+        <Switch location={location} key={location.pathname}>
+          <Route path="/asema/:id" component={ParkingSlot} />
+          <Route path="/" component={Frontpage} />
+        </Switch>
+      </AnimatePresence>
     </Router>
     
   )

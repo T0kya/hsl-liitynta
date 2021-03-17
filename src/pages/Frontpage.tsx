@@ -1,13 +1,36 @@
 import styled from '@emotion/styled'
-import axios from 'axios'
-import   React, { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { Header } from '../components/Header'
 import { Map } from '../components/Map'
-import { Facility } from '../utils/interfaces'
 import { useDispatch } from 'react-redux'
 import { getFacilities } from '../services/facilityService'
 import { useSelector } from '../ducks'
 import Skeleton from 'react-loading-skeleton'
+import { motion } from 'framer-motion'
+
+const pageVariants = {
+  initial: {
+    x: '-100%',
+    transition: {
+      type: 'tween',
+      duration: 0.2
+    }
+  },
+  in: {
+    x: 0,
+    transition: {
+      type: 'tween',
+      duration: 0.2
+    }
+  },
+  out: {
+    x: '100%',
+    transition: {
+      type: 'tween',
+      duration: 0.2
+    }
+  },
+}
 
 const MapContainer = styled.div `
   width: 100%;
@@ -49,13 +72,18 @@ export function Frontpage(){
       <Header>
         <h2>Liityntäpysäköintiparkkipaikat</h2>
       </Header>
-      {isLoading && <Skeleton width="100%" height={700} />}
-      {isError && 'Jotain meni vikaan'}
-      {!isLoading && !isError && (
-        <MapContainer>
-          <Map markers={facilities} />
-        </MapContainer>
-      )}
+      <motion.div initial="initial"
+        animate="in"
+        exit="out"
+        variants={pageVariants}>
+        {isLoading && <Skeleton width="100%" height={700} />}
+        {isError && 'Jotain meni vikaan'}
+        {!isLoading && !isError && (
+          <MapContainer>
+            <Map markers={facilities} />
+          </MapContainer>
+        )}
+      </motion.div>
     </>
   )
 }
