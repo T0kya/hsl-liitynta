@@ -7,6 +7,7 @@ import { getFacilities } from '../services/facilityService'
 import { useSelector } from '../ducks'
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
+import { NotFound } from './NotFound'
 
 const pageVariants = {
   initial: {
@@ -77,7 +78,7 @@ export function Frontpage(){
         exit="out"
         variants={pageVariants}>
         {isLoading && <Skeleton width="100%" height={700} />}
-        {isError && 'Jotain meni vikaan'}
+        {isError && <NotFound />}
         {!isLoading && !isError && (
           <MapContainer>
             <Map markers={facilities} />
