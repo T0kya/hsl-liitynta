@@ -114,7 +114,7 @@ export function ParkingSlot() {
           {info?.pricingMethod === 'CUSTOM' &&
           <Card title="Pysäköintihinnasto">
             {info.pricing.map(price => {
-              return <p key={price.capacityType}> <Translate text={price.capacityType} />: {price.price.fi}</p>
+              return <p key={price.capacityType}> <Translate text={price.capacityType} />: {price.price && price.price.fi}</p>
             }
             )}
             <p><strong> Maksutavat: </strong></p><ul>{info.paymentInfo.paymentMethods.map(payment => <li key={payment}><Translate text={payment} /></li>)}</ul>
